@@ -69,49 +69,52 @@ def deleteReportPack(args):
     result = w4n.deleteReportPack(report_id, report_name)
     logging.info('ReportPack \'%s\' ID \'%s\' deleted', report_name, report_id)
 
-# Command line parsing / Top-level parser
-parser = argparse.ArgumentParser(description='Watch4net ReportPack Management Utility')
-parser.add_argument('-d', '--debug', help='Debugging level (default is info)', required=False, default='info')
+def parse_args():
+    # Command line parsing / Top-level parser
+    parser = argparse.ArgumentParser(description='Watch4net ReportPack Management Utility')
+    parser.add_argument('-d', '--debug', help='Debugging level (default is info)', required=False, default='info')
 
-group1 = parser.add_argument_group(title='Credentials stored in config file')
-group1.add_argument('-c', '--conf', help='Config file with credentials (default is config.ini)', required=False, default='config.ini')
+    group1 = parser.add_argument_group(title='Credentials stored in config file')
+    group1.add_argument('-c', '--conf', help='Config file with credentials (default is config.ini)', required=False, default='config.ini')
 
-# TODO Implement reading credentials
-#group2 = parser.add_argument_group(title='Credentials set via commnad line')
-#group2.add_argument('-H', '--host', help='Watch4net hostname or IP address', required=False, default='localhost') 
-#group2.add_argument('-u', '--user', help='Watch4net username', required=False, default='admin')
-#group2.add_argument('-p', '--pass', help='Watch4net password', required=False)
+    # TODO Implement reading credentials
+    #group2 = parser.add_argument_group(title='Credentials set via commnad line')
+    #group2.add_argument('-H', '--host', help='Watch4net hostname or IP address', required=False, default='localhost') 
+    #group2.add_argument('-u', '--user', help='Watch4net username', required=False, default='admin')
+    #group2.add_argument('-p', '--pass', help='Watch4net password', required=False)
 
-subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers()
 
-# Create parser for 'list' command
-subparser0 = subparsers.add_parser('list', help='Show all ReportPacks')
-subparser0.set_defaults(func=listReportPacks)
+    # Create parser for 'list' command
+    subparser0 = subparsers.add_parser('list', help='Show all ReportPacks')
+    subparser0.set_defaults(func=listReportPacks)
 
-# Create parser for 'listPinnedReportPacks' command
-subparser1 = subparsers.add_parser('pinned', help='Show the currently pinned ReportPacks')
-subparser1.set_defaults(func=listPinnedReportPacks)
+    # Create parser for 'listPinnedReportPacks' command
+    subparser1 = subparsers.add_parser('pinned', help='Show the currently pinned ReportPacks')
+    subparser1.set_defaults(func=listPinnedReportPacks)
 
-# Create parser for 'get' command
-subparser2 = subparsers.add_parser('get', help='Download the specified ReportPack')
-subparser2.set_defaults(func=getReportPack)
-subparser2.add_argument('-id', help='ReportPack ID', required=True)
-subparser2.add_argument('-x', help='Unzip the ReportPack after download', action='store_true', default=False)
+    # Create parser for 'get' command
+    subparser2 = subparsers.add_parser('get', help='Download the specified ReportPack')
+    subparser2.set_defaults(func=getReportPack)
+    subparser2.add_argument('-id', help='ReportPack ID', required=True)
+    subparser2.add_argument('-x', help='Unzip the ReportPack after download', action='store_true', default=False)
 
-# Create parser for 'put' command
-subparser3 = subparsers.add_parser('put', help='Upload the specified ReportPack')
-subparser3.set_defaults(func=createReportPack)
-subgroup = subparser3.add_mutually_exclusive_group(required=True)
-subgroup.add_argument('-name', help='ReportPack Name')
-subgroup.add_argument('-file', help='ReportPack File Name')
+    # Create parser for 'put' command
+    subparser3 = subparsers.add_parser('put', help='Upload the specified ReportPack')
+    subparser3.set_defaults(func=createReportPack)
+    subgroup = subparser3.add_mutually_exclusive_group(required=True)
+    subgroup.add_argument('-name', help='ReportPack Name')
+    subgroup.add_argument('-file', help='ReportPack File Name')
 
-# Create parser for 'remove' command
-subparser4 = subparsers.add_parser('remove', help='Delete the specified ReportPack')
-subparser4.set_defaults(func=deleteReportPack)
-subparser4.add_argument('-id', help='ReportPack ID', required=True)
+    # Create parser for 'remove' command
+    subparser4 = subparsers.add_parser('remove', help='Delete the specified ReportPack')
+    subparser4.set_defaults(func=deleteReportPack)
+    subparser4.add_argument('-id', help='ReportPack ID', required=True)
+
+    return parser.parse_args()
 
 if __name__ == '__main__':
-    args = parser.parse_args()
+    args = parse_args()
 
     if args.debug:
         # Configure logging
