@@ -1,8 +1,8 @@
 #!/usr/local/bin/python
 
 from lib import watch4net
-from lib import tabulate
 from lib import utils
+from tabulate import tabulate
 
 import logging
 import ConfigParser
@@ -11,12 +11,12 @@ import argparse
 def listPinnedReportPacks(args):
     # Retrieve a list of pinned RPs
     reportpacks = w4n.listPinnedReportPacks()
-    print tabulate.tabulate(reportpacks, headers='keys')
+    print tabulate(reportpacks, headers='keys')
 
 def listReportPacks(args):
     # Retrieve a list of all RPs
     reportpacks = w4n.listReportPacks()
-    print tabulate.tabulate(reportpacks, headers='keys')
+    print tabulate(reportpacks, headers='keys')
 
 def getReportPack(args):
     # Downloads the specified RP
