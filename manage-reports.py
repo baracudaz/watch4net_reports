@@ -71,7 +71,7 @@ def deleteReportPack(args):
 
 def parse_args():
     # Command line parsing / Top-level parser
-    parser = argparse.ArgumentParser(description='Watch4net ReportPack Management Utility')
+    parser = argparse.ArgumentParser(description='Watch4net ReportPack CLI Management Utility')
     parser.add_argument('-d', '--debug', help='Debugging level (default is info)', required=False, default='info')
 
     group1 = parser.add_argument_group(title='Credentials stored in config file')
@@ -131,11 +131,12 @@ if __name__ == '__main__':
         hostname = config.get('credentials','hostname')
         username = config.get('credentials','username')
         password = config.get('credentials','password')
+        reports_path = config.get('reports','path')
         logging.debug('Credentials configured via config file: %s', args.conf)
         logging.debug('Watch4net credentials: %s', config.items('credentials'))
 
     # Create session to Wath4net
-    w4n = watch4net.Client(hostname, username, password)
+    w4n = watch4net.Client(hostname, username, password, reports_path)
 
     args.func(args)  # call the default function
     exit(0)

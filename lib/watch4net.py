@@ -14,7 +14,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 class Client:
 
-    def __init__(self, hostname, username, password):
+    def __init__(self, hostname, username, password, reports_path = ''):
         self.logged_in  = False
         self.username   = username
         self.password   = password
@@ -24,7 +24,7 @@ class Client:
             "Content-Type": "text/xml;charset=UTF-8",
             "Authorization": "Basic %s" % base64.b64encode('%s:%s' % (self.username, self.password))
         }
-        self.reports_path = 'Reporting/'
+        self.reports_path = reports_path
         self.cookiejar  = cookielib.CookieJar()
         # Use the HTTPCookieProcessor and CookieJar to store the cookies
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookiejar))
