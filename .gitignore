@@ -1,3 +1,5 @@
 .vscode/
 *.pyc
 *.pyo
+reports/
+.DS_Store
