@@ -29,7 +29,7 @@ def getReportPack(args):
     try:
         report_name = utils.search('id', args.id, reportpacks)[0]['name']
     except:
-        logging.error('ReportPack ID \'%s\' not found!', report_id)
+        logging.error("ReportPack ID '%s' not found!", report_id)
         exit(1)
 
     # Download a ReportPack
@@ -38,18 +38,27 @@ def getReportPack(args):
     if args.x:
         w4n.unzipReportPack(report_file)
 
-def createReportPack(args):
+def putReportPack(args):
     if args.file:
-        result = w4n.createReportPack(args.file)
+        result = w4n.putReportPack(args.file)
     elif args.name:
         report_file = w4n.zipReportPack(args.name)
         if report_file:
-            result = w4n.createReportPack(report_file)
+            result = w4n.putReportPack(report_file)
         else:
-            logging.error('ReportPack \'%s\' cannot be created!', args.name)
+            logging.error("ReportPack '%s' cannot be created!", args.name)
             exit(1)
 
-    logging.info('ReportPack \'%s\' ID \'%s\' succesfully uploaded', result['name'], result['id'])
+    logging.info("ReportPack '%s' ID '%s' succesfully uploaded", result['name'], result['id'])
+
+def buildeportPack(args):
+    if args.name:
+        report_file = w4n.zipReportPack(args.name)
+        if not report_file:
+            logging.error("ReportPack '%s' cannot be created!", args.name)
+            exit(1)
+
+    logging.info("ReportPack '%s' succesfully build.", args.name)
 
 def deleteReportPack(args):
     # Downloads the specified RP
@@ -62,12 +71,12 @@ def deleteReportPack(args):
     try:
         report_name = utils.search('id', args.id, reportpacks)[0]['name']
     except:
-        logging.error('ReportPack ID \'%s\' not found!', report_id)
+        logging.error("ReportPack ID '%s' not found!", report_id)
         exit(1)
 
     # Delete ReportPack
     result = w4n.deleteReportPack(report_id, report_name)
-    logging.info('ReportPack \'%s\' ID \'%s\' deleted', report_name, report_id)
+    logging.info("ReportPack '%s' ID '%s' deleted.", report_name, report_id)
 
 def parse_args():
     # Command line parsing / Top-level parser
@@ -100,16 +109,21 @@ def parse_args():
     subparser2.add_argument('-x', help='Unzip the ReportPack after download', action='store_true', default=False)
 
     # Create parser for 'put' command
-    subparser3 = subparsers.add_parser('put', help='Upload the specified ReportPack')
-    subparser3.set_defaults(func=createReportPack)
+    subparser3 = subparsers.add_parser('put', help='Upload the specified ReportPack or APR file')
+    subparser3.set_defaults(func=putReportPack)
     subgroup = subparser3.add_mutually_exclusive_group(required=True)
     subgroup.add_argument('-name', help='ReportPack Name')
     subgroup.add_argument('-file', help='ReportPack File Name')
 
+    # Create parser for 'build' command
+    subparser4 = subparsers.add_parser('build', help='Build the ReportPack into a ARP file')
+    subparser4.set_defaults(func=buildeportPack)
+    subparser4.add_argument('-name', help='Name of the ReportPack to build', required=True)
+
     # Create parser for 'remove' command
-    subparser4 = subparsers.add_parser('remove', help='Delete the specified ReportPack')
-    subparser4.set_defaults(func=deleteReportPack)
-    subparser4.add_argument('-id', help='ReportPack ID', required=True)
+    subparser5 = subparsers.add_parser('remove', help='Delete the specified ReportPack')
+    subparser5.set_defaults(func=deleteReportPack)
+    subparser5.add_argument('-id', help='ReportPack ID', required=True)
 
     return parser.parse_args()
 
@@ -132,8 +146,8 @@ if __name__ == '__main__':
         username = config.get('credentials','username')
         password = config.get('credentials','password')
         reports_path = config.get('reports','path')
-        logging.debug('Credentials configured via config file: %s', args.conf)
-        logging.debug('Watch4net credentials: %s', config.items('credentials'))
+        logging.debug("Credentials configured via config file: %s", args.conf)
+        logging.debug("Watch4net credentials: %s", config.items('credentials'))
 
     # Create session to Wath4net
     w4n = watch4net.Client(hostname, username, password, reports_path)

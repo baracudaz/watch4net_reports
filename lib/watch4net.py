@@ -165,7 +165,7 @@ class Client:
     def zipReportPack(self, report_name):
 
         zip_path = self.reports_path + report_name
-        zip_file = zip_path + '.zip'
+        zip_file = zip_path + '.arp'
 
         if not os.path.exists(zip_path):
             return None
@@ -174,19 +174,20 @@ class Client:
 
         zip = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED)
 
-        for dirname, subdirs, files in sorted(os.walk(zip_path)):
-            #zip.write(os.path.relpath(dirname))
+        for root, dirs, files in os.walk(zip_path):
+            logging.debug("root '%s', dirs: '%s', Files: '%s'", root, dirs, files)
+
             for filename in files:
-                full_path = os.path.join(dirname, filename)
-                rel_path  = os.path.relpath(os.path.join(dirname, filename), zip_path)
+                full_path = os.path.join(root, filename)
+                rel_path  = os.path.relpath(os.path.join(root, filename), zip_path)
                 zip.write(full_path, rel_path)
-                logging.info(full_path)
+                logging.debug("Adding file '%s' with full path '%s' to zip file", rel_path, full_path)
 
         zip.close()
 
         return zip_file
 
-    def createReportPack(self, report_file):
+    def putReportPack(self, report_file):
         # Encode the file
         with open(report_file, "rb") as file:
             encoded_report_file = base64.b64encode(file.read())
