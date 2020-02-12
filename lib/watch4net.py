@@ -8,6 +8,7 @@ import json
 import logging
 import zipfile
 import os
+import re
 from lxml import html,etree
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -161,6 +162,21 @@ class Client:
             unzip = zipfile.ZipFile(report_file)
             unzip.extractall(unzip_path)
             unzip.close()
+
+        # Convert the XML files to pretty
+        for root, dirs, files in os.walk(unzip_path):
+            for filename in files:
+                # Match only the XML files
+                if re.search('^.*\.xml$', filename):
+                    xml_file = root + '/' + filename
+                    logging.debug("Extracting pretty XML file '%s'", xml_file)
+                    self.prettyPrintXML(xml_file)
+
+    def prettyPrintXML(self, xml_file):
+        assert xml_file is not None
+        parser = etree.XMLParser(resolve_entities=False, strip_cdata=False)
+        document = etree.parse(xml_file, parser)
+        document.write(xml_file, pretty_print=True, encoding='utf-8')
 
     def zipReportPack(self, report_name):
 
