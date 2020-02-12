@@ -51,7 +51,7 @@ def putReportPack(args):
 
     logging.info("ReportPack '%s' ID '%s' succesfully uploaded", result['name'], result['id'])
 
-def buildeportPack(args):
+def buildReportPack(args):
     if args.name:
         report_file = w4n.zipReportPack(args.name)
         if not report_file:
@@ -78,7 +78,7 @@ def deleteReportPack(args):
     result = w4n.deleteReportPack(report_id, report_name)
     logging.info("ReportPack '%s' ID '%s' deleted.", report_name, report_id)
 
-def parse_args():
+def parseArgs():
     # Command line parsing / Top-level parser
     parser = argparse.ArgumentParser(description='Watch4net ReportPack CLI Management Utility')
     parser.add_argument('-d', '--debug', help='Debugging level (default is info)', required=False, default='info')
@@ -117,7 +117,7 @@ def parse_args():
 
     # Create parser for 'build' command
     subparser4 = subparsers.add_parser('build', help='Build the ReportPack into a ARP file')
-    subparser4.set_defaults(func=buildeportPack)
+    subparser4.set_defaults(func=buildReportPack)
     subparser4.add_argument('-name', help='Name of the ReportPack to build', required=True)
 
     # Create parser for 'remove' command
@@ -128,7 +128,7 @@ def parse_args():
     return parser.parse_args()
 
 if __name__ == '__main__':
-    args = parse_args()
+    args = parseArgs()
 
     if args.debug:
         # Configure logging
