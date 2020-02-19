@@ -190,14 +190,26 @@ class Client:
 
         zip = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED)
 
-        for root, dirs, files in os.walk(zip_path):
-            logging.debug("root '%s', dirs: '%s', Files: '%s'", root, dirs, files)
+        file_list = list()
 
+        for root, dirs, files in sorted(os.walk(zip_path)):
             for filename in files:
-                full_path = os.path.join(root, filename)
-                rel_path  = os.path.relpath(os.path.join(root, filename), zip_path)
-                zip.write(full_path, rel_path)
-                logging.debug("Adding file '%s' with full path '%s' to zip file", rel_path, full_path)
+                logging.debug("root '%s', dirs: '%s', Files: '%s'", root, dirs, files)
+                file_list.append(os.path.join(root, filename))
+
+        # Find the files in 'META-INF' path
+        meta_subs = 'META-INF'
+        meta_files = [i for i in file_list if meta_subs in i]
+
+        # Ensure these files are at the begining of the zip
+        for meta_file in meta_files:
+            file_list.remove(meta_file)
+            file_list.insert(0, meta_file)
+
+        for full_path in file_list:
+            rel_path = os.path.relpath(full_path, zip_path)
+            zip.write(full_path, rel_path)
+            logging.debug("Adding file '%s' with full path '%s' to zip file", rel_path, full_path)
 
         zip.close()
 
