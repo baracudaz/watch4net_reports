@@ -1,3 +1,0 @@
-[submodule "watch4net_reports"]
-	path = watch4net_reports
-	url = ssh://git@git.swisscom.com:7999/w4n/watch4net_reports.git

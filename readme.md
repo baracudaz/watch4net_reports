@@ -1,11 +1,33 @@
-# Watch4net ReportPack CLI Management Utility
+# ReportPack Management CLI for Watch4net / EMC SRM / MnR
 
 The purpose of the `manage-reports.py` utility as the name reveals is to allow Watch4net reports management over the CLI. The Watch4net comes with comprehesive UI to manage and edit the reports. However as reports get complex there is a need to export the reports into CM system in order to tract the changes.
 
 ## Prerequisites
 Make sure to install the prerequsites from the `requirements.txt` file using well known `pip` command.
 ```
-$ pip install -r requirements.txt
+  $ pip install -r requirements.txt
+```
+
+## Configuation
+The configuration file `config.ini` contains the Watch4net user credentials and the hostname.
+```
+$ cat config.ini
+# Watch4net credentials
+[credentials]
+hostname = localhost
+username = admin
+password = changeme
+# ReportPack parameters
+[reports]
+path = reports/
+```
+The following two ports (or URLs) are expected for connecting to the Watch4net host:
+* **APG_URL** = http://localhost:58080/APG/
+* **WSGW_URL** = https://localhost:48443/
+
+If your Watch4net happends to run behing firewall you can tunel the two required ports to localhost using the SSH:
+```
+ssh w4n-host -L 48443:w4n-host:48443 -L 58080:w4n-host:58080
 ```
 
 ## Basic Usage
@@ -33,27 +55,6 @@ optional arguments:
 
 Credentials stored in config file:
   -c CONF, --conf CONF  Config file with credentials (default is config.ini)
-```  
-
-## Configuation
-The configuration file `config.ini` contains the Watch4net user credentials and the hostname. 
-```
-$ cat config.ini 
-# Watch4net credentials
-[credentials]
-hostname = localhost
-username = admin
-password = changeme
-# ReportPack parameters
-[reports]
-```
-The following two ports (or URLs) are expected for connecting to the Watch4net host:
-* **APG_URL** = http://localhost:58080/APG/
-* **WSGW_URL** = https://localhost:48443/
-
-If your Watch4net happends to run behing firewall you can tunel the two required ports to localhost using the SSH:
-```
-ssh w4n-host -L 48443:w4n-host:48443 -L 58080:w4n-host:58080
 ```
 
 ## Listing the ReportPacks
@@ -65,7 +66,6 @@ $ ./manage-reports.py list
   72  EMC Smarts
   93  Traffic Flows
  166  Cisco NBAR
- 213  Swisscom Development
  217  Cisco VoIP CUCM
  468  Oracle Palladion VoIP
  469  Oracle Palladion VoIP
@@ -78,6 +78,7 @@ $ ./manage-reports.py list
  734  Traffic Flows
  741  Traffic Flows
 ```
+
 ## Exporting the ReportPacks
 Downloading the ReportPack from Watch4net can be done with **get** option and providing the report ID. This will download the specified RP as ARP file and the option **-x** with extract it. As a result we will get a bunch of **XML** files.
 ```
@@ -102,3 +103,27 @@ INFO: ReportPack 'Cisco QoS' ID '827' succesfully uploaded
 $ ./manage-reports.py put -file reports/Cisco\ QoS.arp 
 INFO: ReportPack 'Cisco QoS' ID '828' succesfully uploaded
 ```
+
+## Authors
+* [Stanislav Likavcan](https://github.com/baracudaz)
+
+## Contributing
+Create a fork of the project into your own reposity. Make all your necessary changes and create a pull request with a description on what was added or removed and details explaining the changes in lines of code. If approved, project owners will merge it.
+
+## License
+```
+    Licensed under the Apache License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may obtain
+    a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and limitations
+    under the License.
+```
+
+## Support
+Please file bugs and issues on the Github issues page for this project. This is to help keep track and document everything related to this repo.
