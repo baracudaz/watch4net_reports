@@ -5,7 +5,7 @@ The purpose of the `manage-reports.py` utility as the name reveals is to allow W
 ## Prerequisites
 Make sure to install the prerequsites from the `requirements.txt` file using well known `pip` command.
 ```
-  $ pip install -r requirements.txt
+  $ pip3 install -r requirements.txt
 ```
 
 ## Configuation
